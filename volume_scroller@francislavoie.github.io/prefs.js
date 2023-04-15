@@ -10,7 +10,7 @@ function init() {
 function fillPreferencesWindow(window) {
     // Use the same GSettings schema as in `extension.js`
     const settings = ExtensionUtils.getSettings(
-        'org.gnome.shell.extensions.gnome-shell-volume-scroller');
+        'org.gnome.shell.extensions.volume-scroller');
     
     // Create a preferences page and group
     const page = new Adw.PreferencesPage();

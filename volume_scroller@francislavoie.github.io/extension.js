@@ -19,7 +19,7 @@ class VolumeScroller
     constructor()
     {
         this.settings = ExtensionUtils.getSettings(
-            'org.gnome.shell.extensions.gnome-shell-volume-scroller');
+            'org.gnome.shell.extensions.volume-scroller');
         const setGranularity = () => {
             this.volume_granularity = this.settings.get_int('granularity') / 100.0;
         };
