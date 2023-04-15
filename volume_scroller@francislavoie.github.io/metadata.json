@@ -14,5 +14,5 @@
   "url": "https://github.com/francislavoie/gnome-shell-volume-scroller",
   "uuid": "volume_scroller@francislavoie.github.io",
   "settings-schema": "org.gnome.shell.extensions.volume-scroller",
-  "version": 9
+  "version": 10
 }
