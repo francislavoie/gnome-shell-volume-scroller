@@ -14,11 +14,11 @@ jobs:
 
       - name: Version
         id: version
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Package Name
         id: package
-        run: echo ::set-output name=package::volume_scroller@francislavoie.github.io.${{ steps.version.outputs.tag }}.shell-extension.zip
+        run: echo "package=volume_scroller@francislavoie.github.io.${{ steps.version.outputs.tag }}.shell-extension.zip" >> $GITHUB_OUTPUT
 
       - name: Create Package
         run: zip -j ${{ steps.package.outputs.package }} volume_scroller@francislavoie.github.io/*
