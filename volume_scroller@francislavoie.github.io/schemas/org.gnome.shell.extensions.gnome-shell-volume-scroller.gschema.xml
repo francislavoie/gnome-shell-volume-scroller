@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.gnome-shell-volume-scroller" path="/org/gnome/shell/extensions/gnome-shell-volume-scroller/">
+  <schema id="org.gnome.shell.extensions.volume-scroller" path="/org/gnome/shell/extensions/volume-scroller/">
     <key name="granularity" type="i">
       <range min="1" max="50" />
       <default>5</default>
