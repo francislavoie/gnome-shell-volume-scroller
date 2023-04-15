@@ -21,7 +21,9 @@ jobs:
         run: echo "package=volume_scroller@francislavoie.github.io.${{ steps.version.outputs.tag }}.shell-extension.zip" >> $GITHUB_OUTPUT
 
       - name: Create Package
-        run: zip -j ${{ steps.package.outputs.package }} volume_scroller@francislavoie.github.io/*
+        run: |
+          cd volume_scroller@francislavoie.github.io
+          zip -r ../${{ steps.package.outputs.package }} .
 
       - name: Upload Package
         uses: softprops/action-gh-release@v1
