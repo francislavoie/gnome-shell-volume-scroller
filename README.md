@@ -18,3 +18,11 @@ mv volume_scroller@francislavoie.github.io ~/.local/share/gnome-shell/extensions
 
 Then restart GNOME Shell. You may either log out and log back in, or enter `Alt+F2` to open the run
 dialog, then type `r` to restart the GNOME Shell.
+
+## Contributing
+
+If you need to update the schema file, run this to update the compiled schema:
+
+```bash
+glib-compile-schemas volume_scroller@francislavoie.github.io/schemas/
+```
