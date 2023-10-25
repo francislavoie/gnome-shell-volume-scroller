@@ -3,13 +3,7 @@
   "original-author": "francislavoie",
   "description": "Scroll up or down in the Top Bar to adjust volume.",
   "shell-version": [
-    "3.36",
-    "3.38",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44"
+    "45"
   ],
   "url": "https://github.com/francislavoie/gnome-shell-volume-scroller",
   "uuid": "volume_scroller@francislavoie.github.io",
