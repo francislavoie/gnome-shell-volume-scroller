@@ -37,11 +37,11 @@ export default class VolumeScrollerExtension extends Extension {
 
     this.scroll_binding = this.panel.connect(
       "scroll-event",
-      this._handle_scroll
+      this._handle_scroll.bind(this)
     );
     this.sink_binding = this.controller.connect(
       "default-sink-changed",
-      this._handle_sink_change
+      this._handle_sink_change.bind(this)
     );
   }
 
@@ -81,7 +81,6 @@ export default class VolumeScrollerExtension extends Extension {
     this.sink.push_volume();
 
     this._show_volume(volume);
-
     return Clutter.EVENT_STOP;
   }
 
