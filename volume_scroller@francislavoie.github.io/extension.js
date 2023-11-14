@@ -1,4 +1,3 @@
-"use strict";
 import Clutter from "gi://Clutter";
 import Gio from "gi://Gio";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
@@ -36,14 +35,13 @@ export default class VolumeScrollerExtension extends Extension {
     this.enabled = true;
     this.sink = this.controller.get_default_sink();
 
-    let self = this;
     this.scroll_binding = this.panel.connect(
       "scroll-event",
-      function(_actor, event){self._handle_scroll(_actor, event)}
+      this._handle_scroll.bind(this)
     );
     this.sink_binding = this.controller.connect(
       "default-sink-changed",
-      function(controller, id){self._handle_sink_change(controller, id)}
+      this._handle_sink_change.bind(this)
     );
   }
 
