@@ -67,10 +67,9 @@ export default class VolumeScrollerExtension extends Extension {
     });
     
     let naturalScroll = settings.get_boolean("natural-scroll");
+    let multiplier = naturalScroll ? -1 : 1;
 
     let scrollDirection = event.get_scroll_direction();
-
-    let multiplier = naturalScroll ? -1 : 1;
 
     switch (scrollDirection) {
       case Clutter.ScrollDirection.UP:
