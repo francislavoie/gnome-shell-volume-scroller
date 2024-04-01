@@ -62,15 +62,14 @@ export default class VolumeScrollerExtension extends Extension {
   _handle_scroll(_actor, event) {
     let volume = this.sink.volume;
 
-    let settings = new Gio.Settings({
+    const settings = new Gio.Settings({
       schema_id: "org.gnome.desktop.peripherals.touchpad",
     });
     
-    let naturalScroll = settings.get_boolean("natural-scroll");
-    let multiplier = naturalScroll ? -1 : 1;
+    const naturalScroll = settings.get_boolean("natural-scroll");
+    const multiplier = naturalScroll ? -1 : 1;
 
-    let scrollDirection = event.get_scroll_direction();
-
+    const scrollDirection = event.get_scroll_direction();
     switch (scrollDirection) {
       case Clutter.ScrollDirection.UP:
         volume += this._get_step() * multiplier;
