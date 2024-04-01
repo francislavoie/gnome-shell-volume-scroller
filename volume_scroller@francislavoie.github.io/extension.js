@@ -15,7 +15,7 @@ export default class VolumeScrollerExtension extends Extension {
   enable() {
     this.settings = this.getSettings();
     const setGranularity = () => {
-        this.volume_granularity = this.settings.get_int("granularity") / 100.0;
+      this.volume_granularity = this.settings.get_int("granularity") / 100.0;
     };
 
     this.controller = Volume.getMixerControl();
@@ -62,13 +62,21 @@ export default class VolumeScrollerExtension extends Extension {
   _handle_scroll(_actor, event) {
     let volume = this.sink.volume;
 
-    switch (event.get_scroll_direction()) {
+    const settings = new Gio.Settings({
+      schema_id: "org.gnome.desktop.peripherals.touchpad",
+    });
+    
+    const naturalScroll = settings.get_boolean("natural-scroll");
+    const multiplier = naturalScroll ? -1 : 1;
+
+    const scrollDirection = event.get_scroll_direction();
+    switch (scrollDirection) {
       case Clutter.ScrollDirection.UP:
-        volume += this._get_step();
+        volume += this._get_step() * multiplier;
         break;
 
       case Clutter.ScrollDirection.DOWN:
-        volume -= this._get_step();
+        volume -= this._get_step() * multiplier;
         break;
 
       default:
