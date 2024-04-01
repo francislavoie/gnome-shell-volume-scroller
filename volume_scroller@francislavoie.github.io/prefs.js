@@ -34,7 +34,7 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
       halign: Gtk.Align.CENTER,
     });
 
-    // Bind the settings to the widgets
+    // Bind the settings
     window._settings.bind(
       'granularity',
       granularityEntry,
