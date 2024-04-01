@@ -107,8 +107,8 @@ export default class VolumeScrollerExtension extends Extension {
   _show_volume(volume) {
     const percentage = volume / this.volume_max;
     const iconIndex = volume === 0
-    ? 0
-    : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
+      ? 0
+      : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
 
     const monitor = -1; // Display volume window on all monitors.
     const icon = Gio.Icon.new_for_string(VolumeScrollerIcons[iconIndex]);
