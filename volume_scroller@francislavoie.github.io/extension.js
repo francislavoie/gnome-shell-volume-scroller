@@ -70,13 +70,15 @@ export default class VolumeScrollerExtension extends Extension {
 
     let scrollDirection = event.get_scroll_direction();
 
+    let multiplier = naturalScroll ? -1 : 1;
+
     switch (scrollDirection) {
       case Clutter.ScrollDirection.UP:
-        volume += naturalScroll ? -this._get_step() : this._get_step();
+        volume += this._get_step() * multiplier;
         break;
 
       case Clutter.ScrollDirection.DOWN:
-        volume -= naturalScroll ? -this._get_step() : this._get_step();
+        volume -= this._get_step() * multiplier;
         break;
 
       default:
