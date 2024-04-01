@@ -111,8 +111,4 @@ export default class VolumeScrollerExtension extends Extension {
   _get_step() {
     return this.volume_max * this.volume_granularity;
   }
-
-  _get_direction() {
-    return this.direction;
-  }
 }
