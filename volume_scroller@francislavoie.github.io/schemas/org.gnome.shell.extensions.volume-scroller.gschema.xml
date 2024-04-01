@@ -7,5 +7,10 @@
       <summary>Granularity</summary>
       <description>How many percentage points to increase or decrease the volume on each scroll tick.</description>
     </key>
+    <key name="invert-scroll" type="b">
+      <default>false</default>
+      <summary>Invert Direction</summary>
+      <description>Scrolling up decreases the volume, scrolling down increases it.</description>
+    </key>
   </schema>
 </schemalist>

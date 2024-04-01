@@ -18,6 +18,10 @@ export default class VolumeScrollerExtension extends Extension {
       this.volume_granularity = this.settings.get_int("granularity") / 100.0;
     };
 
+    const setDirection = () => {
+      this.direction = this.settings.get_boolean("invert-scroll");
+    }
+
     this.controller = Volume.getMixerControl();
     this.panel = Main.panel;
 
@@ -26,11 +30,13 @@ export default class VolumeScrollerExtension extends Extension {
 
     this.volume_max = this.controller.get_vol_max_norm();
     setGranularity();
+    setDirection();
 
     this.scroll_binding = null;
     this.sink_binding = null;
 
     this.settings.connect("changed::granularity", setGranularity);
+    this.settings.connect("changed::invert-scroll", setDirection);
 
     this.enabled = true;
     this.sink = this.controller.get_default_sink();
@@ -62,15 +68,8 @@ export default class VolumeScrollerExtension extends Extension {
   _handle_scroll(_actor, event) {
     let volume = this.sink.volume;
 
-    const settings = new Gio.Settings({
-      schema_id: "org.gnome.desktop.peripherals.touchpad",
-    });
-    
-    const naturalScroll = settings.get_boolean("natural-scroll");
-    const multiplier = naturalScroll ? -1 : 1;
-
-    const scrollDirection = event.get_scroll_direction();
-    switch (scrollDirection) {
+    const multiplier = this.direction ? -1 : 1;
+    switch (event.get_scroll_direction()) {
       case Clutter.ScrollDirection.UP:
         volume += this._get_step() * multiplier;
         break;
