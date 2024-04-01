@@ -13,9 +13,11 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
     const group = new Adw.PreferencesGroup();
     page.add(group);
 
-    // Create a new preferences row
-    const row = new Adw.ActionRow({ title: 'Granularity' });
-    group.add(row);
+    // Create the preference rows
+    const granularityRow = new Adw.ActionRow({ title: 'Granularity' });
+    const invertScrollRow = new Adw.ActionRow({ title: 'Invert Scroll' });
+    group.add(granularityRow);
+    group.add(invertScrollRow);
 
     // Create the value picker
     const granularityEntry = new Gtk.SpinButton({
@@ -24,16 +26,36 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
       valign: Gtk.Align.CENTER,
       halign: Gtk.Align.CENTER,
     });
+
+    // Create the direction switch
+    const invertScrollSwitch = new Gtk.Switch({
+      active: window._settings.get_boolean('invert-scroll'),
+      valign: Gtk.Align.CENTER,
+      halign: Gtk.Align.CENTER,
+    });
+
+    // Bind the settings to the widgets
     window._settings.bind(
       'granularity',
       granularityEntry,
       'value',
       Gio.SettingsBindFlags.DEFAULT
     );
+    
+    window._settings.bind(
+      'invert-scroll',
+      invertScrollSwitch,
+      'active',
+      Gio.SettingsBindFlags.DEFAULT
+    );
 
-    // Add the value picker to the row
-    row.add_suffix(granularityEntry);
-    row.activatable_widget = granularityEntry;
+    // Add the granularity value picker to the row
+    granularityRow.add_suffix(granularityEntry);
+    granularityRow.activatable_widget = granularityEntry;
+
+    // Add the direction switch to the row
+    invertScrollRow.add_suffix(invertScrollSwitch);
+    invertScrollRow.activatable_widget = invertScrollSwitch;
 
     // Add our page to the window
     window.add(page);
