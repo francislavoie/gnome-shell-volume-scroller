@@ -65,7 +65,7 @@ export default class VolumeScrollerExtension extends Extension {
     let settings = new Gio.Settings({
       schema_id: "org.gnome.desktop.peripherals.touchpad",
     });
-    
+
     let naturalScroll = settings.get_boolean("natural-scroll");
 
     let scrollDirection = event.get_scroll_direction();
@@ -106,8 +106,9 @@ export default class VolumeScrollerExtension extends Extension {
 
   _show_volume(volume) {
     const percentage = volume / this.volume_max;
-    const iconIndex =
-      volume === 0 ? 0 : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
+    const iconIndex = volume === 0
+    ? 0
+    : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
 
     const monitor = -1; // Display volume window on all monitors.
     const icon = Gio.Icon.new_for_string(VolumeScrollerIcons[iconIndex]);
