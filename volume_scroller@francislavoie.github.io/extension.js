@@ -68,11 +68,8 @@ export default class VolumeScrollerExtension extends Extension {
   _handle_scroll(_actor, event) {
     let volume = this.sink.volume;
 
-    const inverted = this._get_direction();
-    const multiplier = inverted ? -1 : 1;
-
-    const scrollDirection = event.get_scroll_direction();
-    switch (scrollDirection) {
+    const multiplier = this.direction ? -1 : 1;
+    switch (event.get_scroll_direction()) {
       case Clutter.ScrollDirection.UP:
         volume += this._get_step() * multiplier;
         break;
