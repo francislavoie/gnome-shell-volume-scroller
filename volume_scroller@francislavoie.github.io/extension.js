@@ -71,6 +71,9 @@ export default class VolumeScrollerExtension extends Extension {
     const multiplier = this.direction ? -1 : 1;
     switch (event.get_scroll_direction()) {
       case Clutter.ScrollDirection.UP:
+        if (this.sink.is_muted) {
+          this.sink.change_is_muted(false);
+        }
         volume += this._get_step() * multiplier;
         break;
 
