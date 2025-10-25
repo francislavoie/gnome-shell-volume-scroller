@@ -2,6 +2,7 @@ import Clutter from "gi://Clutter";
 import Gio from "gi://Gio";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as Volume from "resource:///org/gnome/shell/ui/status/volume.js";
+import * as Config from 'resource:///org/gnome/shell/misc/config.js';
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
 const VolumeScrollerIcons = [
@@ -104,11 +105,18 @@ export default class VolumeScrollerExtension extends Extension {
       ? 0
       : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
 
-    const monitor = -1; // Display volume window on all monitors.
     const icon = Gio.Icon.new_for_string(VolumeScrollerIcons[iconIndex]);
     const label = this.sink.get_port().human_port;
+    
+    // GNOME version
+    const [major] = Config.PACKAGE_VERSION.split('.').map(Number);
 
-    Main.osdWindowManager.show(monitor, icon, label, percentage);
+    // Display volume window on all monitors.
+    if (major >= 49) {
+      Main.osdWindowManager.showAll(icon, label, percentage);
+    } else {
+      Main.osdWindowManager.show(-1, icon, label, percentage);
+    }
   }
 
   _get_step() {
