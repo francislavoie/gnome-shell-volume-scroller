@@ -23,6 +23,10 @@ export default class VolumeScrollerExtension extends Extension {
       this.direction = this.settings.get_boolean("invert-scroll");
     }
 
+    const setMiddleClick = () => {
+      this.middle_click_enabled = this.settings.get_boolean("enable-middle-click");
+    }
+
     this.controller = Volume.getMixerControl();
     this.panel = Main.panel;
 
@@ -32,12 +36,15 @@ export default class VolumeScrollerExtension extends Extension {
     this.volume_max = this.controller.get_vol_max_norm();
     setGranularity();
     setDirection();
+    setMiddleClick();
 
     this.scroll_binding = null;
+    this.click_binding = null;
     this.sink_binding = null;
 
     this.settings.connect("changed::granularity", setGranularity);
     this.settings.connect("changed::invert-scroll", setDirection);
+    this.settings.connect("changed::enable-middle-click", setMiddleClick);
 
     this.enabled = true;
     this.sink = this.controller.get_default_sink();
@@ -45,6 +52,10 @@ export default class VolumeScrollerExtension extends Extension {
     this.scroll_binding = this.panel.connect(
       "scroll-event",
       this._handle_scroll.bind(this)
+    );
+    this.click_binding = this.panel.connect(
+      "button-press-event",
+      this._handle_button_press.bind(this)
     );
     this.sink_binding = this.controller.connect(
       "default-sink-changed",
@@ -59,6 +70,8 @@ export default class VolumeScrollerExtension extends Extension {
 
     this.panel.disconnect(this.scroll_binding);
     this.scroll_binding = null;
+    this.panel.disconnect(this.click_binding);
+    this.click_binding = null;
     this.panel = null;
 
     this.controller.disconnect(this.sink_binding);
@@ -92,6 +105,21 @@ export default class VolumeScrollerExtension extends Extension {
     this.sink.push_volume();
 
     this._show_volume(volume);
+    return Clutter.EVENT_STOP;
+  }
+
+  _handle_button_press(_actor, event) {
+    // Middle click (button 2)
+    if (!this.enabled || !this.sink || !this.middle_click_enabled || event.get_button() !== 2) {
+      return Clutter.EVENT_PROPAGATE;
+    }
+
+    const willMute = !this.sink.is_muted;
+    this.sink.change_is_muted(willMute);
+
+    // Show OSD: 0 when muted, current volume when unmuted
+    const volumeToShow = willMute ? 0 : this.sink.volume;
+    this._show_volume(volumeToShow);
     return Clutter.EVENT_STOP;
   }
 
