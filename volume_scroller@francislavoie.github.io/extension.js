@@ -12,9 +12,13 @@ const VolumeScrollerIcons = [
   "audio-volume-high-symbolic",
 ];
 
+const CACHE_TTL_MS = 500;
+
 export default class VolumeScrollerExtension extends Extension {
   enable() {
     this.settings = this.getSettings();
+    this.systemSoundSettings = new Gio.Settings({ schema_id: 'org.gnome.desktop.sound' });
+
     const setGranularity = () => {
       this.volume_granularity = this.settings.get_int("granularity") / 100.0;
     };
@@ -33,7 +37,6 @@ export default class VolumeScrollerExtension extends Extension {
     this.enabled = false;
     this.sink = null;
 
-    this.volume_max = this.controller.get_vol_max_norm();
     setGranularity();
     setDirection();
     setMiddleClick();
@@ -41,6 +44,10 @@ export default class VolumeScrollerExtension extends Extension {
     this.scroll_binding = null;
     this.click_binding = null;
     this.sink_binding = null;
+
+    // Cache for _get_volume_max() to avoid repeated GSettings queries while scrolling
+    this._volume_max_cache = null;
+    this._volume_max_cache_time = 0;
 
     this.settings.connect("changed::granularity", setGranularity);
     this.settings.connect("changed::invert-scroll", setDirection);
@@ -65,6 +72,7 @@ export default class VolumeScrollerExtension extends Extension {
 
   disable() {
     this.settings = null;
+    this.systemSoundSettings = null;
     this.enabled = false;
     this.sink = null;
 
@@ -77,6 +85,8 @@ export default class VolumeScrollerExtension extends Extension {
     this.controller.disconnect(this.sink_binding);
     this.sink_binding = null;
     this.controller = null;
+    this._volume_max_cache = null;
+    this._volume_max_cache_time = 0;
   }
 
   _handle_scroll(_actor, event) {
@@ -99,7 +109,7 @@ export default class VolumeScrollerExtension extends Extension {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    volume = Math.clamp(volume, 0, this.volume_max);
+    volume = Math.clamp(volume, 0, this._get_volume_max());
 
     this.sink.volume = volume;
     this.sink.push_volume();
@@ -128,7 +138,7 @@ export default class VolumeScrollerExtension extends Extension {
   }
 
   _show_volume(volume) {
-    const percentage = volume / this.volume_max;
+    const percentage = volume / this._get_volume_max();
     const iconIndex = volume === 0
       ? 0
       : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
@@ -148,6 +158,32 @@ export default class VolumeScrollerExtension extends Extension {
   }
 
   _get_step() {
-    return this.volume_max * this.volume_granularity;
+    return this._get_volume_max() * this.volume_granularity;
+  }
+
+  _get_volume_max() {
+    // Debounced/cached max volume fetch to avoid lag while scrolling
+    const now = Date.now();
+    if (this._volume_max_cache !== null && (now - this._volume_max_cache_time) < CACHE_TTL_MS) {
+      return this._volume_max_cache;
+    }
+
+    let max = 65536; // Fallback: PA_VOLUME_NORM
+    try {
+      const allowOver = this.systemSoundSettings?.get_boolean('allow-volume-above-100-percent') ?? false;
+      if (allowOver && this.controller?.get_vol_max_amplified) {
+        max = this.controller.get_vol_max_amplified();
+      }
+      if (this.controller?.get_vol_max_norm) {
+        max = this.controller.get_vol_max_norm();
+      }
+      if (this.controller?.get_vol_max) {
+        max = this.controller.get_vol_max();
+      }
+    } catch (_e) {}
+
+    this._volume_max_cache = max;
+    this._volume_max_cache_time = now;
+    return max;
   }
 }
