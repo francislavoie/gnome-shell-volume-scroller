@@ -12,5 +12,10 @@
       <summary>Invert Direction</summary>
       <description>Scrolling up decreases the volume, scrolling down increases it.</description>
     </key>
+    <key name="enable-middle-click" type="b">
+      <default>true</default>
+      <summary>Enable middle-click mute toggle</summary>
+      <description>If enabled, middle-clicking the panel toggles mute.</description>
+    </key>
   </schema>
 </schemalist>

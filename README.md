@@ -12,7 +12,7 @@ To install from a release package, download the [latest release](https://github.
 and extract the downloaded archive to the GNOME Shell Extensions path:
 
 ```bash
-unzip volume_scroller@francislavoie.github.io.[version].shell-extension.zip -d volume_scroller@francislavoie.github.io
+unzip volume_scroller@francislavoie.github.io.*.shell-extension.zip -d volume_scroller@francislavoie.github.io
 mv volume_scroller@francislavoie.github.io ~/.local/share/gnome-shell/extensions
 ```
 
@@ -26,3 +26,5 @@ If you need to update the schema file, run this to update the compiled schema:
 ```bash
 glib-compile-schemas volume_scroller@francislavoie.github.io/schemas/
 ```
+
+For testing on Wayland, see https://gjs.guide/extensions/development/creating.html#testing-the-extension for tips on running a nested GNOME session, which is necessary to run the extension without restarting your main GNOME session (logout/login).

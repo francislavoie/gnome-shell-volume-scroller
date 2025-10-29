@@ -1,15 +1,16 @@
 {
   "name": "Volume Scroller",
   "original-author": "francislavoie",
-  "description": "Scroll up or down in the Top Bar to adjust volume. Supports configuring granularity (default step of 5%)\n\nThis is a fork of https://extensions.gnome.org/extension/4109/volume-scroller/ which is now unfortunately unmaintained/archived.",
+  "description": "Scroll up or down in the Top Bar to adjust volume. Middle-click to toggle mute. Supports configuring granularity (default step of 5%)\n\nThis is a fork of https://extensions.gnome.org/extension/4109/volume-scroller/ which is now unfortunately unmaintained/archived.",
   "shell-version": [
     "45",
     "46",
     "47",
-    "48"
+    "48",
+    "49"
   ],
   "url": "https://github.com/francislavoie/gnome-shell-volume-scroller",
   "uuid": "volume_scroller@francislavoie.github.io",
   "settings-schema": "org.gnome.shell.extensions.volume-scroller",
-  "version": 14
+  "version": 19
 }
