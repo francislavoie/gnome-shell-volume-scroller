@@ -17,5 +17,17 @@
       <summary>Enable middle-click mute toggle</summary>
       <description>If enabled, middle-clicking the panel toggles mute.</description>
     </key>
+    <key name="modifier-key" type="s">
+      <choices>
+        <choice value="none" />
+        <choice value="ctrl" />
+        <choice value="alt" />
+        <choice value="shift" />
+        <choice value="super" />
+      </choices>
+      <default>'none'</default>
+      <summary>Required modifier key</summary>
+      <description>Only change the volume on scroll while this modifier key is held down. "none" means scrolling always changes the volume.</description>
+    </key>
   </schema>
 </schemalist>

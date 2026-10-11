@@ -14,6 +14,15 @@ const VolumeScrollerIcons = [
 
 const CACHE_TTL_MS = 500;
 
+// Maps the "modifier-key" setting to the Clutter modifier mask(s) that must be held.
+const ModifierMasks = {
+  none: 0,
+  ctrl: Clutter.ModifierType.CONTROL_MASK,
+  alt: Clutter.ModifierType.MOD1_MASK,
+  shift: Clutter.ModifierType.SHIFT_MASK,
+  super: Clutter.ModifierType.SUPER_MASK | Clutter.ModifierType.MOD4_MASK,
+};
+
 export default class VolumeScrollerExtension extends Extension {
   enable() {
     this.settings = this.getSettings();
@@ -31,6 +40,10 @@ export default class VolumeScrollerExtension extends Extension {
       this.middle_click_enabled = this.settings.get_boolean("enable-middle-click");
     }
 
+    const setModifier = () => {
+      this.modifier_mask = ModifierMasks[this.settings.get_string("modifier-key")] ?? 0;
+    }
+
     this.controller = Volume.getMixerControl();
     this.panel = Main.panel;
 
@@ -40,6 +53,7 @@ export default class VolumeScrollerExtension extends Extension {
     setGranularity();
     setDirection();
     setMiddleClick();
+    setModifier();
 
     this.scroll_binding = null;
     this.click_binding = null;
@@ -52,6 +66,7 @@ export default class VolumeScrollerExtension extends Extension {
     this.settings.connect("changed::granularity", setGranularity);
     this.settings.connect("changed::invert-scroll", setDirection);
     this.settings.connect("changed::enable-middle-click", setMiddleClick);
+    this.settings.connect("changed::modifier-key", setModifier);
 
     this.enabled = true;
     this.sink = this.controller.get_default_sink();
@@ -90,6 +105,11 @@ export default class VolumeScrollerExtension extends Extension {
   }
 
   _handle_scroll(_actor, event) {
+    // If a modifier key is required but not held, let the panel handle the scroll normally
+    if (this.modifier_mask && (event.get_state() & this.modifier_mask) === 0) {
+      return Clutter.EVENT_PROPAGATE;
+    }
+
     let volume = this.sink.volume;
 
     const multiplier = this.direction ? -1 : 1;
