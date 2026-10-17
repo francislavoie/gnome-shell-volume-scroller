@@ -21,6 +21,16 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
     group.add(invertScrollRow);
     group.add(middleClickRow);
 
+    // Create the modifier key dropdown
+    const modifierKeys = ['none', 'ctrl', 'alt', 'shift', 'super'];
+    const modifierRow = new Adw.ComboRow({
+      title: 'Required modifier key',
+      subtitle: 'Only change volume on scroll while this key is held',
+      model: Gtk.StringList.new(['None', 'Ctrl', 'Alt', 'Shift', 'Super']),
+      selected: Math.max(0, modifierKeys.indexOf(window._settings.get_string('modifier-key'))),
+    });
+    group.add(modifierRow);
+
     // Create the value picker
     const granularityEntry = new Gtk.SpinButton({
       adjustment: new Gtk.Adjustment({ step_increment: 1, lower: 1, upper: 50 }),
@@ -64,6 +74,13 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
       'active',
       Gio.SettingsBindFlags.DEFAULT
     );
+
+    modifierRow.connect('notify::selected', () => {
+      window._settings.set_string('modifier-key', modifierKeys[modifierRow.selected]);
+    });
+    window._settings.connect('changed::modifier-key', () => {
+      modifierRow.selected = Math.max(0, modifierKeys.indexOf(window._settings.get_string('modifier-key')));
+    });
 
     // Add the granularity value picker to the row
     granularityRow.add_suffix(granularityEntry);
