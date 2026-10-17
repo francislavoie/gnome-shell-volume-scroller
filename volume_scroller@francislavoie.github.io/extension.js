@@ -144,8 +144,9 @@ export default class VolumeScrollerExtension extends Extension {
       : Math.clamp(Math.floor(3 * percentage + 1), 1, 3);
 
     const icon = Gio.Icon.new_for_string(VolumeScrollerIcons[iconIndex]);
-    const label = this.sink.get_port().human_port;
-    
+    const port = this.sink.get_port();
+    const label = port ? port.human_port : this.sink.get_description();
+
     // GNOME version
     const [major] = Config.PACKAGE_VERSION.split('.').map(Number);
 
