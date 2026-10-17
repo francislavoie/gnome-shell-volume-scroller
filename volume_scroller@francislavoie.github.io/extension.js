@@ -66,10 +66,12 @@ export default class VolumeScrollerExtension extends Extension {
     this._volume_max_cache = null;
     this._volume_max_cache_time = 0;
 
-    this.settings.connect("changed::granularity", setGranularity);
-    this.settings.connect("changed::invert-scroll", setDirection);
-    this.settings.connect("changed::enable-middle-click", setMiddleClick);
-    this.settings.connect("changed::modifier-key", setModifier);
+    this.settings_bindings = [
+      this.settings.connect("changed::granularity", setGranularity),
+      this.settings.connect("changed::invert-scroll", setDirection),
+      this.settings.connect("changed::enable-middle-click", setMiddleClick),
+      this.settings.connect("changed::modifier-key", setModifier),
+    ];
 
     this.enabled = true;
     this.sink = this.controller.get_default_sink();
@@ -88,7 +90,10 @@ export default class VolumeScrollerExtension extends Extension {
         recognize_on_press: true,
         enabled: this.middle_click_enabled,
       });
-      this.middle_click_gesture.connect("recognize", () => this._toggle_mute());
+      this.gesture_binding = this.middle_click_gesture.connect(
+        "recognize",
+        () => this._toggle_mute()
+      );
       this.panel.add_action_full(
         "volume-scroller-middle-click",
         Clutter.EventPhase.CAPTURE,
@@ -107,6 +112,10 @@ export default class VolumeScrollerExtension extends Extension {
   }
 
   disable() {
+    for (const id of this.settings_bindings) {
+      this.settings.disconnect(id);
+    }
+    this.settings_bindings = null;
     this.settings = null;
     this.systemSoundSettings = null;
     this.enabled = false;
@@ -119,6 +128,10 @@ export default class VolumeScrollerExtension extends Extension {
       this.click_binding = null;
     }
     if (this.middle_click_gesture) {
+      // Clutter actions aren't actors and have no destroy(); removing the
+      // action and dropping our reference releases it.
+      this.middle_click_gesture.disconnect(this.gesture_binding);
+      this.gesture_binding = null;
       this.panel.remove_action(this.middle_click_gesture);
       this.middle_click_gesture = null;
     }

@@ -9,19 +9,18 @@ This was forked from https://github.com/trflynn89/gnome-shell-volume-scroller wh
 ## Manual Installation
 
 To install from a release package, download the [latest release](https://github.com/francislavoie/gnome-shell-volume-scroller/releases)
-and extract the downloaded archive to the GNOME Shell Extensions path:
+and install it with the `gnome-extensions` tool, which also compiles the settings schema:
 
 ```bash
-unzip volume_scroller@francislavoie.github.io.*.shell-extension.zip -d volume_scroller@francislavoie.github.io
-mv volume_scroller@francislavoie.github.io ~/.local/share/gnome-shell/extensions
+gnome-extensions install --force volume_scroller@francislavoie.github.io.*.shell-extension.zip
 ```
 
-Then restart GNOME Shell. You may either log out and log back in, or enter `Alt+F2` to open the run
-dialog, then type `r` to restart the GNOME Shell.
+Then log out and log back in to load it (on X11 you can instead press `Alt+F2` and run `r`).
 
 ## Contributing
 
-If you need to update the schema file, run this to update the compiled schema:
+The compiled schema isn't committed or shipped (GNOME Shell 45+ compiles it on install). When
+running the extension straight from a checkout, compile it locally after changing the schema:
 
 ```bash
 glib-compile-schemas volume_scroller@francislavoie.github.io/schemas/
