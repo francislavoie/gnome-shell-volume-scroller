@@ -6,6 +6,18 @@ Available for download on [GNOME Shell Extensions](https://extensions.gnome.org/
 
 This was forked from https://github.com/trflynn89/gnome-shell-volume-scroller which is unfortunately now archived.
 
+## Settings
+
+- **Granularity**: volume step per scroll tick (default 5%).
+- **Invert Scroll**: swap scroll direction.
+- **Middle-click toggles mute**: middle-click the Top Bar to toggle mute.
+- **Required modifier key**:
+  - `None` (default): scrolling always changes the volume.
+  - `Ctrl` / `Alt` / `Shift` / `Super`: scrolling changes the volume only while that key is held.
+  - `None (exclusive)`: scrolling changes the volume only when none of Ctrl, Alt, Shift or Super is held; with any of them held, the scroll is passed through to the panel. Lock keys such as NumLock/CapsLock are ignored.
+
+Set from the command line: `gsettings --schemadir ~/.local/share/gnome-shell/extensions/volume_scroller@francislavoie.github.io/schemas set org.gnome.shell.extensions.volume-scroller modifier-key none-exclusive`
+
 ## Manual Installation
 
 To install from a release package, download the [latest release](https://github.com/francislavoie/gnome-shell-volume-scroller/releases)

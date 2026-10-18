@@ -14,7 +14,17 @@ const VolumeScrollerIcons = [
 
 const CACHE_TTL_MS = 500;
 
+// Modifiers considered by the "none-exclusive" option. Other state bits such as
+// NumLock (MOD2), CapsLock (LOCK) and mouse button masks are ignored.
+const ExclusiveModifiersMask =
+  Clutter.ModifierType.CONTROL_MASK |
+  Clutter.ModifierType.MOD1_MASK |
+  Clutter.ModifierType.SHIFT_MASK |
+  Clutter.ModifierType.SUPER_MASK |
+  Clutter.ModifierType.MOD4_MASK;
+
 // Maps the "modifier-key" setting to the Clutter modifier mask(s) that must be held.
+// "none-exclusive" is handled separately (see setModifier / _handle_scroll).
 const ModifierMasks = {
   none: 0,
   ctrl: Clutter.ModifierType.CONTROL_MASK,
@@ -44,7 +54,9 @@ export default class VolumeScrollerExtension extends Extension {
     }
 
     const setModifier = () => {
-      this.modifier_mask = ModifierMasks[this.settings.get_string("modifier-key")] ?? 0;
+      const key = this.settings.get_string("modifier-key");
+      this.modifier_exclusive = key === "none-exclusive";
+      this.modifier_mask = ModifierMasks[key] ?? 0;
     }
 
     this.controller = Volume.getMixerControl();
@@ -156,6 +168,11 @@ export default class VolumeScrollerExtension extends Extension {
 
     // If a modifier key is required but not held, let the panel handle the scroll normally
     if (this.modifier_mask && (event.get_state() & this.modifier_mask) === 0) {
+      return Clutter.EVENT_PROPAGATE;
+    }
+
+    // In exclusive mode, only change volume when none of Ctrl/Alt/Shift/Super is held
+    if (this.modifier_exclusive && (event.get_state() & ExclusiveModifiersMask) !== 0) {
       return Clutter.EVENT_PROPAGATE;
     }
 

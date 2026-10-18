@@ -22,11 +22,11 @@ export default class VolumeScrollerExtensionPreferences extends ExtensionPrefere
     group.add(middleClickRow);
 
     // Create the modifier key dropdown
-    const modifierKeys = ['none', 'ctrl', 'alt', 'shift', 'super'];
+    const modifierKeys = ['none', 'ctrl', 'alt', 'shift', 'super', 'none-exclusive'];
     const modifierRow = new Adw.ComboRow({
       title: 'Required modifier key',
-      subtitle: 'Only change volume on scroll while this key is held',
-      model: Gtk.StringList.new(['None', 'Ctrl', 'Alt', 'Shift', 'Super']),
+      subtitle: 'Only change volume on scroll while this key is held. "None (exclusive)" changes volume only when no modifier is held',
+      model: Gtk.StringList.new(['None', 'Ctrl', 'Alt', 'Shift', 'Super', 'None (exclusive)']),
       selected: Math.max(0, modifierKeys.indexOf(window._settings.get_string('modifier-key'))),
     });
     group.add(modifierRow);
