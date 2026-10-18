@@ -24,10 +24,11 @@
         <choice value="alt" />
         <choice value="shift" />
         <choice value="super" />
+        <choice value="none-exclusive" />
       </choices>
       <default>'none'</default>
       <summary>Required modifier key</summary>
-      <description>Only change the volume on scroll while this modifier key is held down. "none" means scrolling always changes the volume.</description>
+      <description>Only change the volume on scroll while this modifier key is held down. "none" means scrolling always changes the volume. "none-exclusive" means scrolling changes the volume only when none of Ctrl, Alt, Shift or Super is held.</description>
     </key>
   </schema>
 </schemalist>
